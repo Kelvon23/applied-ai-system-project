@@ -1,9 +1,18 @@
 # 🎵 Music Recommender Simulation
 
+Screenshots:
 
-for collab filter the data types they use to run this system is mostly has to do with playlists, users, and song
+### CLI Verification
+![CLI Verification](assets/CLI_Verifection.png)
 
-For content based filter the data they use to run this system is the song personal attrubites like lyrcis, mood or medata like genre, artist, era And the audio features like tempo energy etc
+### Edge Case 1
+![Edge Case 1](assets/Edge_Case1.png)
+
+### Edge Case 2
+![Edge Case 2](assets/Edge_case2.png)
+
+### Edge Case 3
+![Edge Case 3](assets/Edge_Case3.png)
 
 
 ## Project Summary
