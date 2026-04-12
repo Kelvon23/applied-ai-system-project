@@ -9,3 +9,13 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
 9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
 10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
+11,Desert Wind,Cactus Bloom,country,melancholic,0.55,96,0.42,0.61,0.74
+12,Bass Drop Kingdom,Flux Reactor,electronic,intense,0.95,140,0.53,0.91,0.04
+13,Candlelight Sonata,Vera Moss,classical,peaceful,0.22,68,0.78,0.30,0.97
+14,Neon Tropics,Solar Flair,reggaeton,energetic,0.88,100,0.86,0.93,0.11
+15,Broken Glass Sky,The Hollow,metal,angry,0.97,168,0.21,0.55,0.06
+16,Soul Kitchen,Amara Jones,r&b,romantic,0.61,88,0.75,0.70,0.45
+17,Bamboo Rain,Zen Drift,world,calm,0.30,74,0.68,0.44,0.83
+18,Throwback Funk,Groove Machine,funk,upbeat,0.80,112,0.88,0.85,0.28
+19,Lonely Planet,Echo Lane,folk,sad,0.33,82,0.29,0.38,0.91
+20,Concrete Jungle,MC Verse,hip-hop,confident,0.78,95,0.61,0.84,0.15

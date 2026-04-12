@@ -1,5 +1,11 @@
 # 🎵 Music Recommender Simulation
 
+
+for collab filter the data types they use to run this system is mostly has to do with playlists, users, and song
+
+For content based filter the data they use to run this system is the song personal attrubites like lyrcis, mood or medata like genre, artist, era And the audio features like tempo energy etc
+
+
 ## Project Summary
 
 In this project you will build and explain a small music recommender system.
@@ -18,6 +24,46 @@ Replace this paragraph with your own summary of what your version does.
 ## How The System Works
 
 Explain your design in plain language.
+
+From my understanding real world system use context-based filtering and collaborative filtering to be able 
+to score a song and use that towards knowing how to recommend a song to a user. For example in content-based filtering we see that they use the song itself to help match them to an individual user taste profile like lyrcis,mood and genre. 
+
+Song Features: Genre,Mood,Energy, Dancebility
+UserProfile Info: Unique ID, paylist of songs, link to songs, 
+Recommender: Song Score, List of ranking songs,
+
+My recommender will compute a score for a song based on the attrubites of a song like mood,genre,energy and danciblity and add them all up for one song. The closer a song is to what the user likes, the more the points it gets. The song with most points will get recommend. 
+
+Algo Recipe:
+
+The recommender takes in a user taste profile with five preferences: genre, mood, target energy, target danceability, and target acousticness
+
+It also takes in the full list of songs loaded from songs.csv and a number k for how many recommendations to return
+
+It then loops through every song in the list and scores each one out of 100 points
+
+Mood is checked first as an exact string match, worth 30 points — it is the strongest signal for how a song feels
+
+Energy is worth up to 25 points, calculated by how close the song's energy value is to the user's target
+
+Genre is checked as an exact string match, worth 20 points
+
+Danceability is worth up to 15 points using the same closeness calculation as energy
+
+Acousticness is worth up to 10 points and mostly acts as a tiebreaker between songs that score similarly on everything else
+
+As each feature is scored, a short reason string is collected to explain why the song ranked the way it did
+
+Once every song is scored, the full list is sorted from highest to lowest score
+
+The top k results are sliced off and returned as a combination of the song, its final score, and its explanation
+
+Even if no song matches genre or mood exactly, the three numeric features can still award up to 50 points so the recommender always returns meaningful results
+
+Poteinal Baises:
+DataSet Size Bias - as the dataset isn't that big so some genres and moods may only appeare once or twice
+Mood Weight Dominance - mood carries the most points so if dataset has several songs with the same mood then it will always cluster at the top. 
+
 
 Some prompts to answer:
 
