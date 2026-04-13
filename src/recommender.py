@@ -72,10 +72,10 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     score = 0.0
     reasons = []
 
-    # Mood match — 30 points
-    if song['mood'].lower() == user_prefs.get('mood', '').lower():
-        score += 30.0
-        reasons.append("mood match (+30)")
+    # Mood match — 30 points (temporarily disabled for experiment)
+    # if song['mood'].lower() == user_prefs.get('mood', '').lower():
+    #     score += 30.0
+    #     reasons.append("mood match (+30)")
 
     # Energy proximity — 25 points max
     energy_diff = abs(song['energy'] - user_prefs.get('target_energy', 0.5))
