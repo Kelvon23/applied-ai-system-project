@@ -1,61 +1,53 @@
-from src.recommender import Song, UserProfile, Recommender
+from src.recommender import load_songs, score_song, recommend_songs
+from src.main import validate_input
 
-def make_small_recommender() -> Recommender:
+# --- Scoring Tests ---
+
+def test_score_song_genre_match_adds_points():
+    user_prefs = {"genre": "pop", "mood": "happy", "target_energy": 0.5, "target_danceability": 0.5, "target_acousticness": 0.5}
+    song = {"genre": "pop", "mood": "happy", "energy": 0.5, "danceability": 0.5, "acousticness": 0.5}
+    score, reasons = score_song(user_prefs, song)
+    assert score > 0
+    assert any("genre match" in r for r in reasons)
+
+def test_score_song_no_match_still_returns_score():
+    user_prefs = {"genre": "metal", "mood": "angry", "target_energy": 0.5, "target_danceability": 0.5, "target_acousticness": 0.5}
+    song = {"genre": "lofi", "mood": "chill", "energy": 0.5, "danceability": 0.5, "acousticness": 0.5}
+    score, reasons = score_song(user_prefs, song)
+    assert score >= 0
+
+def test_recommend_songs_returns_correct_count():
     songs = [
-        Song(
-            id=1,
-            title="Test Pop Track",
-            artist="Test Artist",
-            genre="pop",
-            mood="happy",
-            energy=0.8,
-            tempo_bpm=120,
-            valence=0.9,
-            danceability=0.8,
-            acousticness=0.2,
-        ),
-        Song(
-            id=2,
-            title="Chill Lofi Loop",
-            artist="Test Artist",
-            genre="lofi",
-            mood="chill",
-            energy=0.4,
-            tempo_bpm=80,
-            valence=0.6,
-            danceability=0.5,
-            acousticness=0.9,
-        ),
+        {"genre": "pop", "mood": "happy", "energy": 0.8, "danceability": 0.8, "acousticness": 0.2},
+        {"genre": "lofi", "mood": "chill", "energy": 0.3, "danceability": 0.4, "acousticness": 0.8},
+        {"genre": "rock", "mood": "intense", "energy": 0.9, "danceability": 0.6, "acousticness": 0.1},
     ]
-    return Recommender(songs)
-
-
-def test_recommend_returns_songs_sorted_by_score():
-    user = UserProfile(
-        favorite_genre="pop",
-        favorite_mood="happy",
-        target_energy=0.8,
-        likes_acoustic=False,
-    )
-    rec = make_small_recommender()
-    results = rec.recommend(user, k=2)
-
+    user_prefs = {"genre": "pop", "mood": "happy", "target_energy": 0.8, "target_danceability": 0.8, "target_acousticness": 0.2}
+    results = recommend_songs(user_prefs, songs, k=2)
     assert len(results) == 2
-    # Starter expectation: the pop, happy, high energy song should score higher
-    assert results[0].genre == "pop"
-    assert results[0].mood == "happy"
 
+def test_recommend_songs_sorted_by_score():
+    songs = [
+        {"genre": "pop", "mood": "happy", "energy": 0.8, "danceability": 0.8, "acousticness": 0.2},
+        {"genre": "lofi", "mood": "chill", "energy": 0.3, "danceability": 0.4, "acousticness": 0.8},
+    ]
+    user_prefs = {"genre": "pop", "mood": "happy", "target_energy": 0.8, "target_danceability": 0.8, "target_acousticness": 0.2}
+    results = recommend_songs(user_prefs, songs, k=2)
+    assert results[0][1] >= results[1][1]
 
-def test_explain_recommendation_returns_non_empty_string():
-    user = UserProfile(
-        favorite_genre="pop",
-        favorite_mood="happy",
-        target_energy=0.8,
-        likes_acoustic=False,
-    )
-    rec = make_small_recommender()
-    song = rec.songs[0]
+# --- Guardrail Tests ---
 
-    explanation = rec.explain_recommendation(user, song)
-    assert isinstance(explanation, str)
-    assert explanation.strip() != ""
+def test_validate_input_catches_empty_genre():
+    user_prefs = {"genre": "", "mood": "happy", "target_energy": 0.5, "target_danceability": 0.5, "target_acousticness": 0.5}
+    errors = validate_input(user_prefs)
+    assert any("Genre" in e for e in errors)
+
+def test_validate_input_catches_invalid_energy():
+    user_prefs = {"genre": "pop", "mood": "happy", "target_energy": 1.5, "target_danceability": 0.5, "target_acousticness": 0.5}
+    errors = validate_input(user_prefs)
+    assert any("target_energy" in e for e in errors)
+
+def test_validate_input_passes_valid_input():
+    user_prefs = {"genre": "pop", "mood": "happy", "target_energy": 0.5, "target_danceability": 0.5, "target_acousticness": 0.5}
+    errors = validate_input(user_prefs)
+    assert len(errors) == 0

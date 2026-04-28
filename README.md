@@ -143,6 +143,8 @@ The original point-based scoring system is transparent and explainable — you c
 - Always cross-check your validation logic against your actual data — your guardrails are only as good as the list they check against
 - Grounding AI output in retrieved data produces much more reliable results than letting the model generate freely
 
+**Test Results:** 7 out of 7 tests passed. Tests cover scoring logic, recommendation ranking, and input guardrails. Run with `python -m pytest tests/test_recommender.py -v`.
+
 ## Reflection
 
 Building this project taught me that AI systems are not just about picking the right model. They are about designing the full pipeline around it. The scoring and retrieval logic I built in the earlier module turned out to be the most important part of this project, because it gave Gemini something real and accurate to work with. Without that foundation, the AI explanation would have been unreliable and potentially made up.
