@@ -124,3 +124,29 @@ Gemini's API is free to access via Google AI Studio with no credit card required
 
 **Why keep the original scoring logic?**
 The original point-based scoring system is transparent and explainable — you can see exactly why a song ranked where it did. Replacing it with a pure AI approach would make the system a black box. Keeping the scorer as the retrieval layer and using Gemini only for explanation gives the best of both worlds: accuracy and interpretability.
+
+## Testing Summary
+
+**What worked:**
+- The original scoring logic carried over perfectly and produces consistent, sensible rankings across all 20 songs in the catalog
+- The Gemini integration worked once the correct model name (`gemini-2.5-flash`) and updated library (`google-genai`) were used
+- Input guardrails correctly caught empty input, wrong genres, wrong moods, and non-numeric values and looped back without crashing
+- The system consistently returns meaningful results even when no exact genre or mood match exists, because the three numeric features can still award up to 50 points
+
+**What didn't work at first:**
+- The `google.generativeai` package was deprecated and had to be replaced with `google.genai`
+- The first model tried (`gemini-2.0-flash`) hit a quota error due to the API key being linked to a paid account — switching to `gemini-2.5-flash` resolved this
+- The valid genres and moods list was initially incomplete and didn't cover all genres and moods in the CSV catalog, so some valid searches would have been rejected
+
+**What I learned:**
+- API libraries change fast and deprecation warnings should be addressed immediately
+- Always cross-check your validation logic against your actual data — your guardrails are only as good as the list they check against
+- Grounding AI output in retrieved data produces much more reliable results than letting the model generate freely
+
+## Reflection
+
+Building this project taught me that AI systems are not just about picking the right model. They are about designing the full pipeline around it. The scoring and retrieval logic I built in the earlier module turned out to be the most important part of this project, because it gave Gemini something real and accurate to work with. Without that foundation, the AI explanation would have been unreliable and potentially made up.
+
+I also learned that input validation is not optional. Real users type unexpected things and a system that crashes on bad input is not a real system. Adding guardrails made the project feel genuinely production-ready rather than just a class demo.
+
+Going forward I would expand the song catalog significantly, add support for user history so recommendations improve over time, and potentially build a simple web interface so non-technical users can interact with it without needing a terminal.
