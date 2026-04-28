@@ -1,5 +1,8 @@
 # 🎵 Music Recommender Simulation
 
+## Video Walkthrough
+[Watch the full system walkthrough here](https://www.loom.com/share/fc05f5cb30c44befbddc9a87cad43194)
+
 ## Original Project
 This project extends the **Music Recommender Simulation** from Module 3. My original system loaded a catalog of songs from a CSV file and scored each one out of 100 points based on how well it matched a user's taste profile across five features: genre, mood, energy, danceability, and acousticness. It was a rule-based scoring system with no AI integration — purely logic and math.
 
