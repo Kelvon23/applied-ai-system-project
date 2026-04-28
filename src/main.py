@@ -9,8 +9,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from recommender import load_songs, recommend_songs
 from gemini_explainer import explain_recommendations
 
-VALID_GENRES = ["pop", "rock", "lofi", "jazz", "hip-hop", "classical", "folk", "metal", "r&b", "electronic"]
-VALID_MOODS = ["happy", "sad", "chill", "intense", "energetic", "romantic", "melancholic", "angry"]
+VALID_GENRES = ["pop", "rock", "lofi", "jazz", "hip-hop", "classical", "folk", "metal", "r&b", "electronic", "ambient", "synthwave", "indie pop", "reggaeton", "funk", "world", "country"]
+VALID_MOODS = ["happy", "sad", "chill", "intense", "energetic", "romantic", "melancholic", "angry", "relaxed", "focused", "moody", "peaceful", "calm", "upbeat", "confident"]
 
 def validate_input(user_prefs: dict) -> list:
     """Guardrail: check for missing or invalid user preferences."""

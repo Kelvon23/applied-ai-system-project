@@ -1,266 +1,126 @@
 # 🎵 Music Recommender Simulation
 
-Screenshots:
-
-### CLI Verification
-![CLI Verification](assets/CLI_Verifection.png)
-
-### Edge Case 1
-![Edge Case 1](assets/Edge_Case1.png)
-
-### Edge Case 2
-![Edge Case 2](assets/Edge_case2.png)
-
-### Edge Case 3
-![Edge Case 3](assets/Edge_Case3.png)
+## Original Project
+This project extends the **Music Recommender Simulation** from Module 3. My original system loaded a catalog of songs from a CSV file and scored each one out of 100 points based on how well it matched a user's taste profile across five features: genre, mood, energy, danceability, and acousticness. It was a rule-based scoring system with no AI integration — purely logic and math.
 
 
-## Project Summary
+## Title
+AI-Powered Music Recommender 
 
-In this project you will build and explain a small music recommender system.
+## Summary
+This project upgrades the original rule-based recommender into a real AI-powered system. It keeps the original scoring logic to retrieve the best matching songs from the catalog, then passes those results to Google Gemini which generates a friendly, personalized explanation of why those songs fit the user's vibe. It also includes input guardrails that catch and handle invalid user input gracefully instead of crashing.
 
-Your goal is to:
+This matters because it demonstrates a real-world AI pattern called Retrieval-Augmented Generation (RAG), where an AI model is grounded in actual retrieved data rather than generating answers from scratch — making the output more accurate and trustworthy.
 
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
+## Architecture Overview
 
-Replace this paragraph with your own summary of what your version does.
+![Architecture Diagram](assets/architecture_diagram.png)
 
----
+The system works in four stages:
 
-## How The System Works
+**1. Input & Validation**
+The user enters their music preferences — genre, mood, energy, danceability, and acousticness. Guardrails check that genre and mood are valid options and that numeric values are between 0.0 and 1.0. Invalid input loops back and asks the user to try again instead of crashing.
 
-Explain your design in plain language.
+**2. Retrieval**
+The scoring engine loads songs from `data/songs.csv` and scores each one based on how closely it matches the user's preferences. Each feature contributes a certain number of points toward a total score out of 100.
 
-From my understanding real world system use context-based filtering and collaborative filtering to be able 
-to score a song and use that towards knowing how to recommend a song to a user. For example in content-based filtering we see that they use the song itself to help match them to an individual user taste profile like lyrcis,mood and genre. 
+**3. Generation**
+The top 5 retrieved songs are sent to Google Gemini along with the user's taste profile. Gemini generates a 3-4 sentence explanation in a friendly, conversational tone explaining why those songs are a good match.
 
-Song Features: Genre,Mood,Energy, Dancebility
-UserProfile Info: Unique ID, paylist of songs, link to songs, 
-Recommender: Song Score, List of ranking songs,
-
-My recommender will compute a score for a song based on the attrubites of a song like mood,genre,energy and danciblity and add them all up for one song. The closer a song is to what the user likes, the more the points it gets. The song with most points will get recommend. 
-
-Algo Recipe:
-
-The recommender takes in a user taste profile with five preferences: genre, mood, target energy, target danceability, and target acousticness
-
-It also takes in the full list of songs loaded from songs.csv and a number k for how many recommendations to return
-
-It then loops through every song in the list and scores each one out of 100 points
-
-Mood is checked first as an exact string match, worth 30 points — it is the strongest signal for how a song feels
-
-Energy is worth up to 25 points, calculated by how close the song's energy value is to the user's target
-
-Genre is checked as an exact string match, worth 20 points
-
-Danceability is worth up to 15 points using the same closeness calculation as energy
-
-Acousticness is worth up to 10 points and mostly acts as a tiebreaker between songs that score similarly on everything else
-
-As each feature is scored, a short reason string is collected to explain why the song ranked the way it did
-
-Once every song is scored, the full list is sorted from highest to lowest score
-
-The top k results are sliced off and returned as a combination of the song, its final score, and its explanation
-
-Even if no song matches genre or mood exactly, the three numeric features can still award up to 50 points so the recommender always returns meaningful results
-
-Poteinal Baises:
-DataSet Size Bias - as the dataset isn't that big so some genres and moods may only appeare once or twice
-Mood Weight Dominance - mood carries the most points so if dataset has several songs with the same mood then it will always cluster at the top. 
+**4. Output**
+The ranked songs and Gemini explanation are printed to the terminal for the user to read.
 
 
-Some prompts to answer:
+## Setup Instructions
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+### 1. Clone the repo
 
-You can include a simple diagram or bullet list if helpful.
+git clone https://github.com/Kelvon23/applied-ai-system-project.git
+cd applied-ai-system-project
 
----
+### 2. Install dependencies
 
-## Getting Started
-
-### Setup
-
-1. Create a virtual environment (optional but recommended):
-
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate      # Mac or Linux
-   .venv\Scripts\activate         # Windows
-
-2. Install dependencies
-
-```bash
 pip install -r requirements.txt
-```
 
-3. Run the app:
+This installs all required libraries including `google-genai`, `python-dotenv`, `pandas`, and `pytest`.
 
-```bash
+### 3. Get a free Gemini API key
+- Go to [aistudio.google.com](https://aistudio.google.com)
+- Sign in with your Google account
+- Click **Get API Key** → **Create project** → copy your key
+
+### 4. Create a `.env` file
+In the root of the project create a file called `.env` and add:
+
+GEMINI_API_KEY=your_actual_key_here
+
+### 5. Run the app
+
 python -m src.main
-```
 
-### Running Tests
 
-Run the starter tests with:
+### 6. Run the tests
 
-```bash
 pytest
-```
-
-You can add more tests in `tests/test_recommender.py`.
-
----
-
-## Experiments You Tried
-
-Use this section to document the experiments you ran. For example:
-
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
-
----
-
-## Limitations and Risks
-
-Summarize some limitations of your recommender.
-
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
-
----
-
-## Reflection
-
-Read and complete `model_card.md`:
-
-[**Model Card**](model_card.md)
-
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
 
 
----
+## Sample Interactions
 
-## 7. `model_card_template.md`
+### Example 1 — Happy Pop Fan
+**Input:**
 
-Combines reflection and model card framing from the Module 3 guidance. :contentReference[oaicite:2]{index=2}  
+Genre: pop
+Mood: happy
+Target energy: 0.5
+Target danceability: 0.7
+Target acousticness: 0.5
 
-```markdown
-# 🎧 Model Card - Music Recommender Simulation
+**Output:**
 
-## 1. Model Name
+#1 Sunrise City by Neon Echo
+Genre: pop | Mood: happy | Score: 57.45 / 100
+Why: energy closeness (+17.0), genre match (+20), danceability closeness (+13.65), acousticness closeness (+6.8)
+#2 Gym Hero by Max Pulse
+Genre: pop | Mood: intense | Score: 52.05 / 100
+Why: energy closeness (+14.25), genre match (+20), danceability closeness (+12.3), acousticness closeness (+5.5)
+🤖 Gemini: We've curated a playlist just for you, full of happy pop vibes!
+Our top picks like Sunrise City and Gym Hero are a perfect match for your
+pop genre preference, hitting your desired energy, danceability, and acoustic levels.
 
-Give your recommender a name, for example:
 
-> VibeFinder 1.0
+### Example 2 — Chill Lofi Listener
+**Input:**
 
----
+Genre: lofi
+Mood: chill
+Target energy: 0.2
+Target danceability: 0.3
+Target acousticness: 0.8
 
-## 2. Intended Use
+**Output:**
 
-- What is this system trying to do
-- Who is it for
+#1 Library Rain by Paper Lanterns
+Genre: lofi | Mood: chill | Score: 63.20 / 100
+Why: energy closeness (+23.75), genre match (+20), danceability closeness (+10.8), acousticness closeness (+8.6)
+#2 Midnight Coding by LoRoom
+Genre: lofi | Mood: chill | Score: 61.30 / 100
+Why: energy closeness (+23.0), genre match (+20), danceability closeness (+9.3), acousticness closeness (+7.9)
+🤖 Gemini: These picks are perfect for a chill lofi session! Library Rain
+and Midnight Coding both nail your low energy and high acousticness targets,
+making them ideal background tracks for studying or winding down.
 
-Example:
 
-> This model suggests 3 to 5 songs from a small catalog based on a user's preferred genre, mood, and energy level. It is for classroom exploration only, not for real users.
 
----
+## Design Decisions
 
-## 3. How It Works (Short Explanation)
+**Why RAG instead of asking Gemini to recommend directly?**
+Letting Gemini recommend songs from scratch would produce hallucinated song titles that don't exist in the catalog. By retrieving real songs first with the scoring engine and then passing them to Gemini, the AI explanation is always grounded in actual data. This is the core idea behind RAG and it makes the output much more accurate and trustworthy.
 
-Describe your scoring logic in plain language.
+**Why input guardrails with loops instead of just crashing?**
+A real application should never crash because a user made a typo. The guardrail loops keep asking until valid input is provided rather than ending the program with an error. This makes the system feel polished and production-ready instead of fragile.
 
-- What features of each song does it consider
-- What information about the user does it use
-- How does it turn those into a number
+**Why Google Gemini?**
+Gemini's API is free to access via Google AI Studio with no credit card required, making it practical for a student project. The `google-genai` library is simple, well documented, and actively maintained.
 
-Try to avoid code in this section, treat it like an explanation to a non programmer.
-
----
-
-## 4. Data
-
-Describe your dataset.
-
-- How many songs are in `data/songs.csv`
-- Did you add or remove any songs
-- What kinds of genres or moods are represented
-- Whose taste does this data mostly reflect
-
----
-
-## 5. Strengths
-
-Where does your recommender work well
-
-You can think about:
-- Situations where the top results "felt right"
-- Particular user profiles it served well
-- Simplicity or transparency benefits
-
----
-
-## 6. Limitations and Bias
-
-Where does your recommender struggle
-
-Some prompts:
-- Does it ignore some genres or moods
-- Does it treat all users as if they have the same taste shape
-- Is it biased toward high energy or one genre by default
-- How could this be unfair if used in a real product
-
----
-
-## 7. Evaluation
-
-How did you check your system
-
-Examples:
-- You tried multiple user profiles and wrote down whether the results matched your expectations
-- You compared your simulation to what a real app like Spotify or YouTube tends to recommend
-- You wrote tests for your scoring logic
-
-You do not need a numeric metric, but if you used one, explain what it measures.
-
----
-
-## 8. Future Work
-
-If you had more time, how would you improve this recommender
-
-Examples:
-
-- Add support for multiple users and "group vibe" recommendations
-- Balance diversity of songs instead of always picking the closest match
-- Use more features, like tempo ranges or lyric themes
-
----
-
-## 9. Personal Reflection
-
-A few sentences about what you learned:
-
-- What surprised you about how your system behaved
-- How did building this change how you think about real music recommenders
-- Where do you think human judgment still matters, even if the model seems "smart"
-
+**Why keep the original scoring logic?**
+The original point-based scoring system is transparent and explainable — you can see exactly why a song ranked where it did. Replacing it with a pure AI approach would make the system a black box. Keeping the scorer as the retrieval layer and using Gemini only for explanation gives the best of both worlds: accuracy and interpretability.
